@@ -74,15 +74,8 @@
         <div class="row">
           <div class="col-md-6 col-md-offset-3">
               <div class="pagination">
-                  {{ $videos->setPath('/search/' . $key)->render() }}
+                  {{ $videos->render() }}
               </div>
-          </div>
-          <div class="col-md-6 col-md-offset-3">
-              @foreach ($tags as $value)
-                  <a href="/search/{{ $value->tag_name }}" class="badge">
-                      {{ $value->tag_name }}
-                  </a>
-              @endforeach
           </div>
         </div>
     </div>

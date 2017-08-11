@@ -15,8 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/products', function () {
-    return view('products', compact('videos'));
-});
+Route::get('/home', 'HomeController@index');
 
-Route::get('/search/{key}', 'HomeController@search');
+Route::get('/search/{key?}', 'HomeController@search');

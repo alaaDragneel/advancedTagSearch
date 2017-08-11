@@ -24,11 +24,16 @@ class Video extends Model
         return $this->belongsTo('App\Category', 'cat_id');
     }
 
+    public function scopeGetByNormalRelation($query, $key)
+    {
+        return $query->where('title', 'LIKE', '%'. $key .'%');
+    }
+
     public function scopeGetByRelation($query, $relationName, $coloumnName, $key)
     {
         // NOTE whereHas('relation name', anonymous function)
-        
-        return $query->whereHas($relationName, function ($q) use ($coloumnName, $key) {
+
+        return $query->orWhereHas($relationName, function ($q) use ($coloumnName, $key) {
             return $q->where($coloumnName, $key);
         });
     }

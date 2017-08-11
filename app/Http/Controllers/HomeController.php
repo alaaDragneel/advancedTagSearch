@@ -7,32 +7,28 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 
 use App\Video;
-use App\Category;
+
 use App\Tag;
 
 class HomeController extends Controller
 {
-    public function search($key)
+    public function index()
     {
-        $video = Video::where('title', 'LIKE', '%'. $key .'%')->paginate(3);
+        $videos = Video::paginate(4);
+        $key = null;
+        return view('home', compact('videos'));
+    }
 
-        $videoTags = Video::getByRelation('tags', 'tag_name', $key)->paginate(3);
+    public function search(Request $request, $key = null)
+    {
 
-        $videoCats = Video::getByRelation('cat', 'name', $key)->paginate(3);
+        $key = $key == null ? $request->search : $key;
 
-        //total videos
-        $total = $video->total() + $videoTags->total() + $videoCats->total();
 
-        $items = array_merge($video->items(), $videoTags->items(), $videoCats->items());
-
-        // NOTE make Collection And make The Arry indexs be unique
-        $itemsColletions = collect($items)->unique();
-
-        $currentPage = Paginator::resolveCurrentPage();
-
-        // Paginator(colletions, totalFromPaginatorInstance, number of paginat, $currentPage);
-
-        $videos = new Paginator($itemsColletions, $total, 3, $currentPage);
+        $videos = Video::GetByNormalRelation($key)
+        ->getByRelation('tags', 'tag_name', $key)
+        ->getByRelation('cat', 'name', $key)
+        ->paginate(3);
 
         $tags = Tag::all();
 
